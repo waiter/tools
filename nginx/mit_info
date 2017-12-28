@@ -1,0 +1,41 @@
+server{
+    listen 8085;
+    server_name  xxx.xx;
+    index index.php index.html index.htm;
+    root  xxxxxxxx;
+    client_max_body_size 100M;
+    location ~ \.php$ {
+	    error_log xxxxx;
+	    try_files      $uri = 404;
+	    fastcgi_pass   127.0.0.1:9000;
+	    fastcgi_index  index.php;
+	    fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+	    include        fastcgi_params;
+    }   
+    location / { 
+        if (!-e $request_filename) {
+            rewrite ^/(.*)$ /index.php last;
+        }   
+    }   
+    location ~(robots.txt) {
+        log_not_found off;
+        expires 7d;
+        break;
+    }   
+    location ~ ^/(appliaction|system|.git)/{
+        deny all;
+        break;
+    }   
+    location ~ .*\.(ico|gif|jpg|jpeg|png|bmp|swf)$ {
+        expires      30d;
+        break;
+    }   
+    location ~ .*\.(js|css)?$ {
+        expires      12h;
+        break;
+    }   
+    location ~ /\.ht {
+        deny all;
+    }   
+}
+
